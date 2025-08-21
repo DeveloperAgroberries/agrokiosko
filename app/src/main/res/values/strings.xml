@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Agrokiosko</string>
+
+    // Fragment Options
+    <string name="print_payroll">Imprimir nomina</string>
+    <string name="print_activities">Actividades desarrolladas</string>
+    <string name="check_bonus">Consultar bonos</string>
+    <string name="settings">Configuraciones</string>
+    <string name="buscarImpresora">Buscar impresora</string>
+</resources>

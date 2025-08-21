@@ -1,0 +1,30 @@
+package com.agroberriesmx.agrokiosko.domain.model
+
+data class ActivitiesModel (
+    val cCodigoLab:String,
+    val cTipoLab:String,
+    val cCodigoSem:String,
+    val dDocumentoLab:String,
+    val cCodigoLug:String ,
+    val cCodigoTra:String ,
+    val cCodigoLot:String ,
+    val vNombreLot:String ,
+    val nSecuenciaLab:String,
+    val cCodigoAct:String ,
+    val vNombreAct:String ,
+    val cCodigoCul:String ,
+    val vNombreCul:String ,
+    val nCantidadLab:String ,
+    val nCostoLab:String ,
+    val nCostonorLab:String ,
+    val nCantextLab:String ,
+    val nCostoextLab:String ,
+    val nCanttripleLab:String ,
+    val nCostotripleLab:String ,
+    val nCostoopeLab:String ,
+    val nSueldoLab:String ,
+    val vNombreTra:String ,
+    val vApellidopatTra:String ,
+    val vApellidomatTra:String ,
+    val vEmailTra:String
+)

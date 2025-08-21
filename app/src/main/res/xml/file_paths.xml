@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Acceso al directorio de archivos internos de la aplicación -->
+<!--    <files-path-->
+<!--        name="internal_files"-->
+<!--        path="." />  &lt;!&ndash; Permite acceder a todo el contenido del directorio de archivos internos &ndash;&gt;-->
+
+<!--    &lt;!&ndash; Acceso al directorio de caché de la aplicación &ndash;&gt;-->
+<!--    <cache-path-->
+<!--        name="cache_files"-->
+<!--        path="." />  &lt;!&ndash; Permite acceder a todo el contenido del directorio de caché &ndash;&gt;-->
+
+    <!-- Acceso a un archivo específico dentro de los archivos internos -->
+    <files-path
+        name="log_file"
+        path="." />  <!-- Acceso solo al archivo app_logs.txt -->
+    <external-path
+        name="external_files"
+        path="." />
+
+    <!-- Acceso a archivos en el directorio externo (si es necesario) -->
+<!--    <external-path-->
+<!--        name="external_files"-->
+<!--        path="." />  &lt;!&ndash; Permite acceder a todo el contenido del almacenamiento externo &ndash;&gt;-->
+</paths>
