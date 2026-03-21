@@ -26,5 +26,6 @@ data class ActivitiesModel (
     val vNombreTra:String ,
     val vApellidopatTra:String ,
     val vApellidomatTra:String ,
+    val abreviadoTam:String? ,
     val vEmailTra:String
 )

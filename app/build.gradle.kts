@@ -15,7 +15,7 @@ android {
         applicationId = "com.agroberriesmx.agrokiosko"
         minSdk = 21
         targetSdk = 35
-        versionCode = 4 //Ultima version 20/08/2025
+        versionCode = 8 //Ultima version 20/10/2025
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -32,12 +32,14 @@ android {
 
             resValue("string", "AgroberriesMX", "Agrokiosko")
             buildConfigField("String", "BASE_URL", "\"http://54.165.41.23:5053/api/Agrokiosko/\"")
+            //buildConfigField("String", "BASE_URL", "\"http://192.168.1.31:5011/api/Agrokiosko/\"")
         }
 
         getByName("debug") {
             isDebuggable = true
             resValue("string", "AgroberriesMX", "[DEBUG]Agrokiosko")
             buildConfigField("String", "BASE_URL", "\"http://54.165.41.23:5053/api/Agrokiosko/\"")
+            //buildConfigField("String", "BASE_URL", "\"http://192.168.1.31:5011/api/Agrokiosko/\"")
         }
     }
     compileOptions {
@@ -90,6 +92,10 @@ dependencies {
     implementation("com.sun.mail:android-activation:$mailerVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")  // Para Android
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+
+    //PDF
+    //implementation ("com.github.barteksc:android-pdf-viewer:3.2.0-beta.1" )
+    //implementation ("com.github.barteksc:android-pdf-viewer:2.8.2")
 
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.7.0")

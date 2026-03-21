@@ -7,4 +7,24 @@
     <string name="check_bonus">Consultar bonos</string>
     <string name="settings">Configuraciones</string>
     <string name="buscarImpresora">Buscar impresora</string>
+    <string name="politicas">Politicas de la Empresa</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    // Fragment Menu Politicas
+    <string name="nombreMenu">Políticas Agroberries</string>
+    <string name="infantil">Política No trabajo infantil</string>
+    <string name="sexual">Política No Acoso Sexual</string>
+    <string name="represalias">Política No Represalias</string>
+    <string name="jobforzado">Política No Trabajo Forzado</string>
+
+    <string name="buzon">Política de buzón</string>
+    <string name="libertad">Libertad de asociación</string>
+    <string name="discriminacion">Política No discriminación</string>
+    <string name="dh">Derechos humanos</string>
+    <string name="sanciones">Política aplicación de sanciones</string>
+
+    //DESCRIPCIONES
+    <string name="logodescription">Logo agroberries</string>
+
 </resources>

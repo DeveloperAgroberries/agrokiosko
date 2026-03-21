@@ -1,6 +1,7 @@
 package com.agroberriesmx.agrokiosko.ui.options
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.agroberriesmx.agrokiosko.data.logger.LogUtil
@@ -86,6 +87,7 @@ class OptionsViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = OptionsState.Loading
             val result = withContext(Dispatchers.IO) { getActivitiesUseCase(worker) }
+
             if (result != null) {
                 var totalWeek = 0.0
                 val ticketContent = StringBuilder()
@@ -97,6 +99,12 @@ class OptionsViewModel @Inject constructor(
 
                 activitiesForDay.forEach { (date, activities) ->
                     var totalDia = 0.0
+                    var totalCajasGeneralDia = 0.0 // Total de todas las cajas para el día
+                    var pagoCajasDia = 0.0 // Total de todas las cajas para el día
+
+                    // ⭐ MAPA CLAVE: Para el desglose de cajas por tamaño para ESTE DÍA
+                    val desgloseCajasPorTamanoHoy = mutableMapOf<String, Double>()
+                    val desglosePagosPorTamanoHoy = mutableMapOf<String, Double>() // ⭐ NUEVO MAPA PARA PAGOS
 
                     val activitiesByCode = activities.groupBy { it.cCodigoAct }
 
@@ -104,11 +112,38 @@ class OptionsViewModel @Inject constructor(
 
                     activitiesByCode.forEach { (activityCode, activitiesForCode) ->
                         var totalForCode = 0.0
+
                         activitiesForCode.forEach { activity ->
-                            if (activity.cCodigoAct.trim() == "9112") {
+                            val trimmedActivityCode = activity.cCodigoAct.trim()
+
+                            if (trimmedActivityCode == "9112") {
                                 totalForCode -= activity.nSueldoLab.toDouble()
                             } else {
                                 totalForCode += activity.nSueldoLab.toDouble()
+                            }
+
+                            // ⭐ Lógica para contabilizar y desglosar SOLO las actividades "0160"
+                            if (trimmedActivityCode == "0160") {
+                                val cantidadCajas = activity.nCantidadLab.toDouble()
+                                // ✅ Esto maneja nulos y vacíos, asignando "Sin Tamaño" si aplica
+                                val tamano = activity.abreviadoTam?.trim() ?: "Sin Tamanio"
+
+                                val pagoPorActividad = activity.nSueldoLab.toDouble()
+
+                                if(tamano != "Sin tamanio"){
+                                    totalCajasGeneralDia += cantidadCajas // Suma al total general de cajas del día
+                                    //Log.e("mensaje if", "entre al if: ${totalCajasGeneralDia}")
+                                }
+
+                                // Suma al desglose por tamaño (incluyendo "Sin Tamaño")
+                                desgloseCajasPorTamanoHoy[tamano] =
+                                    (desgloseCajasPorTamanoHoy[tamano] ?: 0.0) + cantidadCajas
+
+                                // ⭐ SUMA DE PAGOS al desglose por tamaño (USANDO EL NUEVO MAPA)
+                                desglosePagosPorTamanoHoy[tamano] =
+                                    (desglosePagosPorTamanoHoy[tamano] ?: 0.0) + pagoPorActividad
+
+                                // Log.e("tamanio", "nombre: ${tamano} - cantidad: ${cantidadCajas}") // Mantener este log si es útil para depurar
                             }
                         }
 
@@ -117,7 +152,6 @@ class OptionsViewModel @Inject constructor(
                             .take(16) // Limitar nombre a 16 caracteres
                         val line = "${activityCode.trim()} $activityName ${"%.2f".format(totalForCode)}"
 
-                        // Si la línea es más larga de 32 caracteres, recórtala o divídela
                         val maxLineLength = 32
                         if (line.length > maxLineLength) {
                             val part1 = line.take(maxLineLength)    // Primera parte
@@ -131,7 +165,29 @@ class OptionsViewModel @Inject constructor(
 
                         totalDia += totalForCode
                     }
+
                     ticketContent.appendLine("Total del Dia: ${"%.2f".format(totalDia)}")
+
+                    // ⭐ BLOQUE: IMPRIMIR EL DESGLOSE DE CAJAS POR TAMAÑO (incluyendo "Sin Tamaño")
+                    if (desgloseCajasPorTamanoHoy.isNotEmpty()) {
+                        ticketContent.appendLine("--- Desglose Cajas ---")
+                        desgloseCajasPorTamanoHoy.forEach { (tamano, cantidad) ->
+                            if(tamano == "Sin tamanio"){
+                                desglosePagosPorTamanoHoy.forEach { (tamano, pagoTotal) ->
+                                    if(tamano == "Sin tamanio"){
+                                        ticketContent.appendLine("Pago septimo dia: ${"%.2f".format(pagoTotal)}")
+                                    }
+                                }
+                            }else{
+                                ticketContent.appendLine("Cajas de $tamano: ${"%.0f".format(cantidad)}")
+                            }
+                        }
+                    }
+
+                    // La línea totalCajas (general del día) se mantiene
+                    if(totalCajasGeneralDia > 0.0){
+                        ticketContent.appendLine("Total Cajas: ${"%.0f".format(totalCajasGeneralDia)}") // Formatear sin decimales
+                    }
                     ticketContent.appendLine("------------------------------\n")
                     totalWeek += totalDia;
                 }

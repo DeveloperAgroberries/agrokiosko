@@ -1,5 +1,6 @@
 package com.agroberriesmx.agrokiosko.data.network.response
 
+import android.util.Log
 import com.agroberriesmx.agrokiosko.domain.model.ActivitiesModel
 import com.google.gson.annotations.SerializedName
 
@@ -34,9 +35,11 @@ data class ActivitiesResponseItem (
     @SerializedName("vNombreTra") val vNombreTra:String ,
     @SerializedName("vApellidopatTra") val vApellidopatTra:String ,
     @SerializedName("vApellidomatTra") val vApellidomatTra:String ,
+    @SerializedName("abreviadoTam") val abreviadoTam:String? ,
     @SerializedName("vEmailTra") val vEmailTra:String
 ) {
     fun toDomain(): ActivitiesModel{
+        Log.e("Deserialization_Check", "En toDomain(): abreviadoTam es -> '${this.abreviadoTam}'")
         return ActivitiesModel(
             cCodigoLab = cCodigoLab,
             cTipoLab = cTipoLab,
@@ -63,6 +66,7 @@ data class ActivitiesResponseItem (
             vNombreTra = vNombreTra,
             vApellidopatTra = vApellidopatTra,
             vApellidomatTra = vApellidomatTra,
+            abreviadoTam = abreviadoTam,
             vEmailTra = vEmailTra
         )
     }

@@ -22,6 +22,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.agroberriesmx.agrokiosko.data.logger.LogUtil
 import com.agroberriesmx.agrokiosko.data.mailer.AutoMailer
 import com.agroberriesmx.agrokiosko.data.printer.PrinterManager
@@ -35,6 +36,8 @@ import kotlinx.coroutines.withContext
 import okio.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
+import com.agroberriesmx.agrokiosko.R
+
 
 @AndroidEntryPoint
 class OptionsFragment : Fragment() {
@@ -107,7 +110,7 @@ class OptionsFragment : Fragment() {
             handleAction(scannedData)
         } else {
             logUtil.logMessage("Limite de impresiones para el usuario.")
-            showToast("Ya has Impreso 2 veces este ticket el día de hoy.")
+            showToast("Ya has Impreso 3 veces este ticket el día de hoy.")
         }
     }
 
@@ -134,6 +137,11 @@ class OptionsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // ✅ Se añade un escuchador de clic al botón de políticas
+        binding.btnPoliticas.setOnClickListener {
+            // ✅ Navega a PoliticasFragment cuando se presiona el botón
+            findNavController().navigate(R.id.action_optionsFragment_to_menuPoliticasFragment)
+        }
         printerManager = PrinterManager(requireContext())
         logUtil = LogUtil(requireContext())
         mailer = AutoMailer(requireContext())
@@ -216,17 +224,17 @@ class OptionsFragment : Fragment() {
     }
 
     private fun initListeners() {
-        binding.btnPrintPayroll.setOnClickListener {
+       /* binding.btnPrintPayroll.setOnClickListener {
             startScannerForPrintPayroll()
-        }
+        }*/
 
         binding.btnPrintActivities.setOnClickListener {
             startScannerForPrintActivities()
         }
 
-        binding.btnCheckBonus.setOnClickListener {
+        /* binding.btnCheckBonus.setOnClickListener {
             startScannerForPrintBonus()
-        }
+        }*/
 
         binding.ivSettings.setOnClickListener {
             optionsViewModel.shareLogs()
@@ -291,7 +299,7 @@ class OptionsFragment : Fragment() {
                         mailer.sendEmailInBackground(toEmail,"Nomina",data)
                     } else {
                         logUtil.logMessage("Limite de impresiones para el usuario.")
-                        showToast("Ya has impreso 2 veces este ticket el día de hoy.")
+                        showToast("Ya has impreso 3 veces este ticket el día de hoy.")
                     }
                 }
             } else {
@@ -305,7 +313,7 @@ class OptionsFragment : Fragment() {
                     mailer.sendEmailInBackground(toEmail,"Nomina",data)
                 } else {
                     logUtil.logMessage("Limite de impresiones para el usuario.")
-                    showToast("Ya has impreso 2 veces este ticket el día de hoy.")
+                    showToast("Ya has impreso 3 veces este ticket el día de hoy.")
                 }
             }
         }
@@ -354,8 +362,8 @@ class OptionsFragment : Fragment() {
                 return@withContext false
             }
 
-            // Verificar si el número de impresiones es menor que 2
-            printCount.toInt() < 2
+            // Verificar si el número de impresiones es menor que 3 Ricardo Dimas
+            printCount.toInt() < 3
         }
     }
 

@@ -18,7 +18,11 @@ class RepositoryImpl @Inject constructor(private val apiService: AgrokioskoApiSe
     override suspend fun getActivities(worker: String): List<ActivitiesModel>? {
         return runCatching { apiService.getActivities(worker) }
             .mapCatching { response -> response.activities.map{ it.toDomain() } }
-            .onFailure { Log.i("ErrorApi", "Ha ocurrido un error ${it.message}") }
+            //.onFailure { Log.i("ErrorApi", "Ha ocurrido un error ${it.message}") }
+            .onFailure {
+                // ⭐ CAMBIO A Log.e Y SE INCLUYE EL STACK TRACE
+                Log.e("RepositoryImpl", "ERROR en getActivities: ${it.message}", it)
+            }
             .getOrNull()
     }
 }

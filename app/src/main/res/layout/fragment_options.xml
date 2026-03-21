@@ -33,7 +33,39 @@
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_gravity="center"/>
 
-            <LinearLayout
+            <!--LinearLayout
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal"
+                android:layout_marginTop="-200dp">
+
+                <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:src="@drawable/logo_agrokiosko"
+                android:contentDescription="@string/logodescription" />
+            </LinearLayout-->
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:background="@color/white"
+                app:cardCornerRadius="96dp"
+                app:cardPreventCornerOverlap="false"
+                app:strokeColor="@color/black"
+                app:strokeWidth="1dp"
+                android:layout_marginTop="-200dp"
+                android:layout_marginBottom="20dp">
+
+                <ImageView
+                    android:layout_width="188dp"
+                    android:layout_height="195dp"
+                    app:cardCornerRadius="36dp"
+                    android:src="@drawable/logo_agrokiosko" />
+
+            </androidx.cardview.widget.CardView>
+
+            <!--LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal"
@@ -49,10 +81,10 @@
                     android:text="@string/print_payroll"
                     android:backgroundTint="@color/Secondary"/>
 
-            </LinearLayout>
+            </LinearLayout-->
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal"
                 android:orientation="horizontal"
@@ -63,13 +95,41 @@
                     android:id="@+id/btnPrintActivities"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:icon="@drawable/ic_activities"
-                    android:text="@string/print_activities"
-                    android:backgroundTint="@color/Secondary"/>
+                    app:icon="@drawable/ic_bonus"
+                    app:iconTint="@color/black"
+                    app:iconSize="36dp"
+                    android:text="@string/print_payroll"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/tercero"
+                    android:textStyle="bold"/>
 
             </LinearLayout>
 
             <LinearLayout
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp">
+
+                <Button
+                    android:id="@+id/btnPoliticas"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:icon="@drawable/ic_activities"
+                    app:iconTint="@color/black"
+                    app:iconSize="36dp"
+                    android:text="@string/politicas"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/tercero"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <!--LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal"
@@ -85,13 +145,16 @@
                     android:text="@string/check_bonus"
                     android:backgroundTint="@color/Secondary"/>
 
-            </LinearLayout>
+            </LinearLayout-->
 
             <Button
                 android:id="@+id/btnBuscarImpresora"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/buscarImpresora" />
+                android:text="@string/buscarImpresora"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/principal"/>
 
         </LinearLayout>
 

@@ -1,8 +1,13 @@
 package com.agroberriesmx.agrokiosko.domain.ticket
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 object TicketBuilder {
     val fechaHoy = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault()).format(java.util.Date())
     val anio = java.text.SimpleDateFormat("yyyy", java.util.Locale.getDefault()).format(java.util.Date())
+    val horaActual = SimpleDateFormat("HH:mm a", Locale.getDefault()).format(Date())
 
     fun buildPayrollTicket(
         totalNOR: Double,
@@ -25,7 +30,9 @@ object TicketBuilder {
         $nombreCompleto
         RANCHO: $rancho
         
-        F.IMPRESION:  $fechaHoy
+        F.IMPRESION: 
+        $fechaHoy-$horaActual
+        -----------------------
         SUELDO:       $totalNOR
         7MO DIA + BA:      $totalOPE
         AGUINALDO:    $totalAGI
@@ -53,7 +60,7 @@ object TicketBuilder {
         workerName: String
     ): String {
 
-        return """
+return """
 ***********************
 DETALLE DE ACTIVIDADES
 ***********************
@@ -61,7 +68,9 @@ CODIGO TRABAJADOR: $workerCode
 NOMBRE TRABAJADOR:
 $workerName
 
-F.IMPRESION:  $fechaHoy
+FECHA Y HORA DE IMPRESION: 
+$fechaHoy-$horaActual
+-----------------------
 $activitiesData        
 -----------------------
 TOTAL:        $activitiesDataTotal

@@ -9,5 +9,29 @@
         android:id="@+id/optionsFragment"
         android:name="com.agroberriesmx.agrokiosko.ui.options.OptionsFragment"
         android:label="fragment_options"
-        tools:layout="@layout/fragment_options" />
+        tools:layout="@layout/fragment_options">
+        <action
+            android:id="@+id/action_optionsFragment_to_menuPoliticasFragment"
+            app:destination="@id/menuPoliticasFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/menuPoliticasFragment"
+        android:name="com.agroberriesmx.agrokiosko.ui.menupoliticas.MenuPoliticasFragment"
+        android:label="fragment_menu_politicas"
+        tools:layout="@layout/fragment_menu_politicas">
+        <action
+            android:id="@+id/action_menuPoliticasFragment_to_politicasFragment"
+            app:destination="@id/politicasFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/politicasFragment"
+        android:name="com.agroberriesmx.agrokiosko.ui.politicas.PoliticasFragment"
+        android:label="fragment_politicas"
+        tools:layout="@layout/fragment_politicas">
+        <argument
+            android:name="pdf_url"
+            app:argType="string" />
+    </fragment>
 </navigation>
