@@ -32,14 +32,14 @@ android {
 
             resValue("string", "AgroberriesMX", "Agrokiosko")
             buildConfigField("String", "BASE_URL", "\"http://54.165.41.23:5053/api/Agrokiosko/\"")
-            //buildConfigField("String", "BASE_URL", "\"http://192.168.1.31:5011/api/Agrokiosko/\"")
+            //buildConfigField("String", "BASE_URL", "\"http://192.168.50.120:5011/api/Agrokiosko/\"")
         }
 
         getByName("debug") {
             isDebuggable = true
             resValue("string", "AgroberriesMX", "[DEBUG]Agrokiosko")
             buildConfigField("String", "BASE_URL", "\"http://54.165.41.23:5053/api/Agrokiosko/\"")
-            //buildConfigField("String", "BASE_URL", "\"http://192.168.1.31:5011/api/Agrokiosko/\"")
+            //buildConfigField("String", "BASE_URL", "\"http://192.168.50.120:5011/api/Agrokiosko/\"")
         }
     }
     compileOptions {

@@ -36,7 +36,9 @@ data class ActivitiesResponseItem (
     @SerializedName("vApellidopatTra") val vApellidopatTra:String ,
     @SerializedName("vApellidomatTra") val vApellidomatTra:String ,
     @SerializedName("abreviadoTam") val abreviadoTam:String? ,
-    @SerializedName("vEmailTra") val vEmailTra:String
+    @SerializedName("vEmailTra") val vEmailTra:String,
+    @SerializedName("descuentoSindicato") val descuentoSindicato: Double?,
+    @SerializedName("esSindicalizado") val esSindicalizado: Boolean?
 ) {
     fun toDomain(): ActivitiesModel{
         Log.e("Deserialization_Check", "En toDomain(): abreviadoTam es -> '${this.abreviadoTam}'")
@@ -67,7 +69,9 @@ data class ActivitiesResponseItem (
             vApellidopatTra = vApellidopatTra,
             vApellidomatTra = vApellidomatTra,
             abreviadoTam = abreviadoTam,
-            vEmailTra = vEmailTra
+            vEmailTra = vEmailTra,
+            descuentoSindicato = descuentoSindicato,
+            esSindicalizado = this.esSindicalizado ?: false
         )
     }
 }

@@ -37,7 +37,7 @@ import okio.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
 import com.agroberriesmx.agrokiosko.R
-
+import android.util.Log
 
 @AndroidEntryPoint
 class OptionsFragment : Fragment() {
@@ -203,15 +203,22 @@ class OptionsFragment : Fragment() {
     }
 
     private fun activitiesState(state: OptionsState.SuccessActivities) {
+        val data = state.activitiesData
+
         checkAndRequestPermissions(
             TicketBuilder.buildActivitiesTicket(
-                state.activitiesData.ticketContent,
-                redondearADosDecimales(state.activitiesData.weekTotal).toString(),
-                state.activitiesData.workerCode,
-                state.activitiesData.fullName
-            ), state.activitiesData.workerCode, state.activitiesData.email,"actividades"
+                activitiesData = data.ticketContent,
+                subtotal = data.weekTotal,
+                descuento = data.totalSindicato, // El que viene de la API
+                neto = data.totalNeto,           // El que viene de la API
+                workerCode = data.workerCode,
+                workerName = data.fullName
+            ),
+            data.workerCode,
+            data.email,
+            "actividades"
         )
-        optionsViewModel.resetState() // Restablecer el estado después de usarlo
+        optionsViewModel.resetState()
     }
 
     private fun errorState() {

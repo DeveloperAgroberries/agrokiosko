@@ -40,7 +40,9 @@ class OptionsViewModel @Inject constructor(
         val weekTotal: Double,
         val workerCode: String,
         val fullName: String,
-        val email: String
+        val email: String,
+        val totalSindicato: Double, // Nuevo
+        val totalNeto: Double       // Nuevo
     )
 
     fun getPayroll(worker: String) {
@@ -84,12 +86,15 @@ class OptionsViewModel @Inject constructor(
     }
 
     fun getActivities(worker: String) {
+        Log.d("Pruebas", "Entre a activitis")
         viewModelScope.launch {
             _state.value = OptionsState.Loading
             val result = withContext(Dispatchers.IO) { getActivitiesUseCase(worker) }
 
             if (result != null) {
                 var totalWeek = 0.0
+                var totalSindicato = 0.0 // Variable para acumular el descuento real
+
                 val ticketContent = StringBuilder()
                 val workerCode = result[0].cCodigoTra
                 val fullName = result[0].vNombreTra + " " + result[0].vApellidopatTra + " " + result[0].vApellidomatTra
@@ -99,12 +104,9 @@ class OptionsViewModel @Inject constructor(
 
                 activitiesForDay.forEach { (date, activities) ->
                     var totalDia = 0.0
-                    var totalCajasGeneralDia = 0.0 // Total de todas las cajas para el día
-                    var pagoCajasDia = 0.0 // Total de todas las cajas para el día
-
-                    // ⭐ MAPA CLAVE: Para el desglose de cajas por tamaño para ESTE DÍA
+                    var totalCajasGeneralDia = 0.0
                     val desgloseCajasPorTamanoHoy = mutableMapOf<String, Double>()
-                    val desglosePagosPorTamanoHoy = mutableMapOf<String, Double>() // ⭐ NUEVO MAPA PARA PAGOS
+                    val desglosePagosPorTamanoHoy = mutableMapOf<String, Double>()
 
                     val activitiesByCode = activities.groupBy { it.cCodigoAct }
 
@@ -115,83 +117,82 @@ class OptionsViewModel @Inject constructor(
 
                         activitiesForCode.forEach { activity ->
                             val trimmedActivityCode = activity.cCodigoAct.trim()
+                            val sueldo = activity.nSueldoLab.toDouble()
 
-                            if (trimmedActivityCode == "9112") {
-                                totalForCode -= activity.nSueldoLab.toDouble()
-                            } else {
-                                totalForCode += activity.nSueldoLab.toDouble()
+                            // ⭐ CORRECCIÓN: Sumamos lo que manda la API (C# ya validó si es "1" o "0")
+                            // No calculamos manual, usamos el valor del objeto activity
+                            // ⭐ EVALUACIÓN: Si la API dice que es sindicalizado, sumamos el descuento que mandó el C#
+                            if (activity.esSindicalizado == true) {
+                                totalSindicato += (activity.descuentoSindicato ?: 0.0)
                             }
 
-                            // ⭐ Lógica para contabilizar y desglosar SOLO las actividades "0160"
+                            if (trimmedActivityCode == "9112") {
+                                totalForCode -= sueldo
+                            } else {
+                                totalForCode += sueldo
+                            }
+
                             if (trimmedActivityCode == "0160") {
                                 val cantidadCajas = activity.nCantidadLab.toDouble()
-                                // ✅ Esto maneja nulos y vacíos, asignando "Sin Tamaño" si aplica
                                 val tamano = activity.abreviadoTam?.trim() ?: "Sin Tamanio"
 
-                                val pagoPorActividad = activity.nSueldoLab.toDouble()
-
-                                if(tamano != "Sin tamanio"){
-                                    totalCajasGeneralDia += cantidadCajas // Suma al total general de cajas del día
-                                    //Log.e("mensaje if", "entre al if: ${totalCajasGeneralDia}")
+                                if (tamano != "Sin tamanio") {
+                                    totalCajasGeneralDia += cantidadCajas
                                 }
 
-                                // Suma al desglose por tamaño (incluyendo "Sin Tamaño")
-                                desgloseCajasPorTamanoHoy[tamano] =
-                                    (desgloseCajasPorTamanoHoy[tamano] ?: 0.0) + cantidadCajas
-
-                                // ⭐ SUMA DE PAGOS al desglose por tamaño (USANDO EL NUEVO MAPA)
-                                desglosePagosPorTamanoHoy[tamano] =
-                                    (desglosePagosPorTamanoHoy[tamano] ?: 0.0) + pagoPorActividad
-
-                                // Log.e("tamanio", "nombre: ${tamano} - cantidad: ${cantidadCajas}") // Mantener este log si es útil para depurar
+                                desgloseCajasPorTamanoHoy[tamano] = (desgloseCajasPorTamanoHoy[tamano] ?: 0.0) + cantidadCajas
+                                desglosePagosPorTamanoHoy[tamano] = (desglosePagosPorTamanoHoy[tamano] ?: 0.0) + sueldo
                             }
                         }
 
-                        // Asegúrate de que cada línea no exceda los 32 caracteres
-                        val activityName = activitiesForCode.first().vNombreAct.trim()
-                            .take(16) // Limitar nombre a 16 caracteres
+                        val activityName = activitiesForCode.first().vNombreAct.trim().take(16)
                         val line = "${activityCode.trim()} $activityName ${"%.2f".format(totalForCode)}"
 
-                        val maxLineLength = 32
-                        if (line.length > maxLineLength) {
-                            val part1 = line.take(maxLineLength)    // Primera parte
-                            val part2 = line.drop(maxLineLength)    // Segunda parte (si es necesario)
-
-                            ticketContent.appendLine(part1)
-                            ticketContent.appendLine(part2.take(maxLineLength))  // Asegúrate de que la segunda parte no exceda el límite
+                        if (line.length > 32) {
+                            ticketContent.appendLine(line.take(32))
+                            ticketContent.appendLine(line.drop(32).take(32))
                         } else {
                             ticketContent.appendLine(line)
                         }
-
                         totalDia += totalForCode
                     }
 
                     ticketContent.appendLine("Total del Dia: ${"%.2f".format(totalDia)}")
 
-                    // ⭐ BLOQUE: IMPRIMIR EL DESGLOSE DE CAJAS POR TAMAÑO (incluyendo "Sin Tamaño")
                     if (desgloseCajasPorTamanoHoy.isNotEmpty()) {
                         ticketContent.appendLine("--- Desglose Cajas ---")
                         desgloseCajasPorTamanoHoy.forEach { (tamano, cantidad) ->
-                            if(tamano == "Sin tamanio"){
-                                desglosePagosPorTamanoHoy.forEach { (tamano, pagoTotal) ->
-                                    if(tamano == "Sin tamanio"){
+                            if (tamano == "Sin tamanio") {
+                                desglosePagosPorTamanoHoy.forEach { (t, pagoTotal) ->
+                                    if (t == "Sin tamanio") {
                                         ticketContent.appendLine("Pago septimo dia: ${"%.2f".format(pagoTotal)}")
                                     }
                                 }
-                            }else{
+                            } else {
                                 ticketContent.appendLine("Cajas de $tamano: ${"%.0f".format(cantidad)}")
                             }
                         }
                     }
 
-                    // La línea totalCajas (general del día) se mantiene
-                    if(totalCajasGeneralDia > 0.0){
-                        ticketContent.appendLine("Total Cajas: ${"%.0f".format(totalCajasGeneralDia)}") // Formatear sin decimales
+                    if (totalCajasGeneralDia > 0.0) {
+                        ticketContent.appendLine("Total Cajas: ${"%.0f".format(totalCajasGeneralDia)}")
                     }
                     ticketContent.appendLine("------------------------------\n")
-                    totalWeek += totalDia;
+                    totalWeek += totalDia
                 }
-                val activitiesWithWorkerInfo = ActivitiesWithWorkerInfo(ticketContent, totalWeek, workerCode, fullName, workerEmail)
+
+                // ⭐ Cálculo del Neto Final respetando la validación de la API
+                val totalNeto = totalWeek - totalSindicato
+
+                val activitiesWithWorkerInfo = ActivitiesWithWorkerInfo(
+                    ticketContent = ticketContent,
+                    weekTotal = totalWeek,
+                    workerCode = workerCode,
+                    fullName = fullName,
+                    email = workerEmail,
+                    totalSindicato = totalSindicato,
+                    totalNeto = totalNeto
+                )
                 _state.value = OptionsState.SuccessActivities(activitiesWithWorkerInfo)
             } else {
                 _state.value = OptionsState.Error("Ha ocurrido un error, vuelve a intentarlo")

@@ -55,12 +55,25 @@ object TicketBuilder {
 
     fun buildActivitiesTicket(
         activitiesData: StringBuilder,
-        activitiesDataTotal: String,
+        subtotal: Double,       // Cambiamos a Double para recibir el dato real
+        descuento: Double,      // Recibimos el descuento de la API
+        neto: Double,           // Recibimos el neto de la API
         workerCode: String,
         workerName: String
     ): String {
 
-return """
+        // ⭐ Solo mostramos el bloque de descuento si el descuento es mayor a cero
+        val seccionFinanciera = if (descuento > 0.0) {
+            """
+SUBTOTAL:      ${"%.2f".format(subtotal)}
+DESC. SIND (2%): -${"%.2f".format(descuento)}
+TOTAL NETO:    ${"%.2f".format(neto)}
+            """.trimIndent()
+        } else {
+            "TOTAL:        ${"%.2f".format(subtotal)}"
+        }
+
+        return """
 ***********************
 DETALLE DE ACTIVIDADES
 ***********************
@@ -73,16 +86,13 @@ $fechaHoy-$horaActual
 -----------------------
 $activitiesData        
 -----------------------
-TOTAL:        $activitiesDataTotal
+$seccionFinanciera
 -----------------------
 
-KIOSKO AGROBERRIES MEXICO ${anio}
+KIOSKO AGROBERRIES MEXICO $anio
 Dudas?
 Comunicate con RRHH!
 ***********************
-
-
-
-""".trimIndent()
+""".trimIndent() + "\n\n\n"
     }
 }

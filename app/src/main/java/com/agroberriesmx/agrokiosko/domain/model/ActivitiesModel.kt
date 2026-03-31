@@ -27,5 +27,8 @@ data class ActivitiesModel (
     val vApellidopatTra:String ,
     val vApellidomatTra:String ,
     val abreviadoTam:String? ,
-    val vEmailTra:String
+    val vEmailTra:String,
+    // ⭐ AGREGA ESTA LÍNEA PARA QUE EL VIEWMODEL LA RECONOZCA
+    val descuentoSindicato: Double?,
+    val esSindicalizado: Boolean?
 )
